@@ -8,7 +8,7 @@ import importlib.resources as importlib_resources
 import json
 from typing import Dict, Iterable, Set, Tuple, TYPE_CHECKING
 
-from .config import _enabled_multicodecs
+from . import config
 
 if TYPE_CHECKING:
     from multiformats.multicodec import Multicodec
@@ -80,7 +80,8 @@ def load_multicodec_table() -> Tuple[Dict[int, Multicodec], Dict[str, Multicodec
     with importlib_resources.open_text("multiformats_config", "multicodec-table.json", encoding="utf8") as _table_f:
         table_json = json.load(_table_f)
         multicodecs = (Multicodec(**row) for row in table_json)
-        if _enabled_multicodecs is not None:
-            multicodecs = (m for m in multicodecs if m.name in _enabled_multicodecs or m.code in _enabled_multicodecs)
+        if config._enabled_multicodecs is not None:
+            multicodecs = (m for m in multicodecs if m.name in config._enabled_multicodecs or m.code in config._enabled_multicodecs)
         code_table, name_table = build_multicodec_tables(multicodecs)
+    config.lock()
     return code_table, name_table

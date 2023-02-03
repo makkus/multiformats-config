@@ -8,7 +8,7 @@ import importlib.resources as importlib_resources
 import json
 from typing import Dict, Iterable, Tuple, TYPE_CHECKING
 
-from .config import _enabled_multibases
+from . import config
 
 if TYPE_CHECKING:
     from multiformats.multibase import Multibase
@@ -53,7 +53,8 @@ def load_multibase_table() -> Tuple[Dict[str, Multibase], Dict[str, Multibase]]:
     with importlib_resources.open_text("multiformats_config", "multibase-table.json", encoding="utf8") as _table_f:
         table_json = json.load(_table_f)
         multibases = (Multibase(**row) for row in table_json)
-        if _enabled_multibases is not None:
-            multibases = (m for m in multibases if m.name in _enabled_multibases or m.code in _enabled_multibases)
+        if config._enabled_multibases is not None:
+            multibases = (m for m in multibases if m.name in config._enabled_multibases or m.code in config._enabled_multibases)
         code_table, name_table = build_multibase_tables(multibases)
+    config.lock()
     return code_table, name_table

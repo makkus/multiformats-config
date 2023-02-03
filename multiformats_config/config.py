@@ -26,6 +26,24 @@ _minimal_multibases = frozenset([
 
 _enabled_multicodecs: Optional[Set[Union[int, str]]] = None
 _enabled_multibases: Optional[Set[str]] = None
+_locked: bool = False
+
+def is_locked() -> bool:
+    r""" Whether the configuration is locked. """
+    return _locked
+
+def lock() -> None:
+    r"""
+        Locks configuration, disabling further modification.
+        Automatically called the first time configuration/table data is accessed.
+    """
+    # pylint: disable = global-statement
+    global _locked
+    _locked = True
+
+class LockedConfigError(Exception):
+    r""" Error raised by :func:`enable` if the configuration is locked (see :func:`is_locked` and :func:`lock`). """
+    ...
 
 def enable(*,
            codecs: Optional[Iterable[Union[int, str]]] = None,
@@ -40,6 +58,8 @@ def enable(*,
         Passing :obj:`None` (default) to the `multicodecs` (resp. `multibases`) keyword argument means that all multicodecs (resp. multibases) will be loaded.
     """
     # pylint: disable = global-statement
+    if is_locked():
+        raise LockedConfigError("Cannot enable multicodecs/multibases: multiformats configuration is locked.")
     global _enabled_multicodecs
     global _enabled_multibases
     _multicodecs = {_validate_multicodec_data(data) for data in codecs} if codecs is not None else None
