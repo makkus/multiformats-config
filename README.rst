@@ -19,6 +19,10 @@ multiformats-config: Configuration for the 'multiformats' package.
 
 This module provides configuration and table information for the `multiformats <https://github.com/hashberg-io/multiformats/>`_ library.
 
+This is a temporary fork of the original project to be used until the original project incorporates a bug fix to work with newer versions of the 'typing_extensions' dependency. Python versions 3.11 & 3.12 are not tested with this fork.
+
+Bug: https://github.com/hashberg-io/typing-validation/issues/1
+
 License
 -------
 
