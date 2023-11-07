@@ -3,7 +3,7 @@
 """
 
 import re
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional, Union, Set
 
 _minimal_multicodecs = frozenset([
     0x00, # identity
@@ -24,8 +24,8 @@ _minimal_multibases = frozenset([
     "base58btc",
 ])
 
-_enabled_multicodecs: Optional[set[Union[int, str]]] = None
-_enabled_multibases: Optional[set[str]] = None
+_enabled_multicodecs: Optional[Set[Union[int, str]]] = None
+_enabled_multibases: Optional[Set[str]] = None
 
 def enable(*,
            codecs: Optional[Iterable[Union[int, str]]] = None,
